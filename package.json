@@ -1,0 +1,74 @@
+{
+  "name": "skillstate",
+  "version": "0.1.0",
+  "description": "Declarative project skill environments powered by skills.sh",
+  "type": "module",
+  "license": "MIT",
+  "author": "Austin Davis Court",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adaviscourt/skillstate.git"
+  },
+  "homepage": "https://github.com/adaviscourt/skillstate#readme",
+  "bugs": {
+    "url": "https://github.com/adaviscourt/skillstate/issues"
+  },
+  "keywords": [
+    "agent-skills",
+    "ai-agents",
+    "cli",
+    "skills",
+    "skills-sh"
+  ],
+  "bin": {
+    "skillstate": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "README.md",
+    "CHANGELOG.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "SECURITY.md"
+  ],
+  "engines": {
+    "node": ">=22.20.0"
+  },
+  "packageManager": "npm@11.12.1",
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "npm run quality && npm run typecheck && npm test && npm run package:check",
+    "dev": "tsx src/cli.ts",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "package:check": "npm run build && publint && node scripts/package-smoke.mjs",
+    "prepack": "npm run build",
+    "quality": "biome check .",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "npm run build && node scripts/network-e2e.mjs",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "commander": "^15.0.0",
+    "skills": "1.5.20",
+    "smol-toml": "^1.7.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.8",
+    "@types/node": "^22.15.0",
+    "@vitest/coverage-v8": "^4.0.17",
+    "publint": "^0.3.15",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.17"
+  }
+}
