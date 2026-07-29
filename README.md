@@ -44,6 +44,40 @@ npx skillstate check
 
 `skillstate check` never accesses the network or changes files. It exits `3` when declared state is not covered by `skills-lock.json` or is absent from a configured agent.
 
+## Usage Examples
+
+Start a repository with shared Claude Code and OpenCode skills:
+
+```bash
+skillstate init --agent claude-code --agent opencode
+skillstate add vercel-labs/agent-skills --skill react-best-practices
+skillstate sync
+```
+
+Preview exactly what Skillstate would change before touching generated skill directories:
+
+```bash
+skillstate sync --dry-run --verbose
+```
+
+Install a project-local skill that lives in the same repository:
+
+```bash
+skillstate add ./skills/internal-review --skill internal-review
+```
+
+Refresh one declared skill from its source:
+
+```bash
+skillstate update react-best-practices
+```
+
+Use CI to catch drift after someone edits the manifest or generated skills:
+
+```bash
+npx skillstate check
+```
+
 ## Manifest
 
 Default filename: `skillstate.toml` at the Git repository root.
