@@ -1,0 +1,46 @@
+name: Bug report
+description: Report reproducible incorrect behavior
+title: "bug: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Please remove secrets, credentials, and private repository URLs.
+  - type: input
+    id: version
+    attributes:
+      label: Skillstate version
+      placeholder: Output of skillstate --version
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version and operating system
+    validations:
+      required: true
+  - type: textarea
+    id: manifest
+    attributes:
+      label: Minimal manifest (if relevant)
+      description: Use N/A for packaging, help, init, CI, or release issues.
+      render: toml
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Actual output
+      render: text
+    validations:
+      required: true

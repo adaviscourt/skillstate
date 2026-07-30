@@ -211,7 +211,7 @@ Normal `sync` is additive and corrective. It does not delete lock entries absent
 2. Show each proposed removal and target.
 3. Require confirmation unless `--yes` is present.
 4. Delegate removal to `skills`.
-5. Refuse ambiguous removals when ownership cannot be established safely.
+5. Treat confirmation as an explicit assertion that undeclared project lock entries may be removed from all project agents. Alternate manifests cannot prune shared root state.
 
 ## Architecture
 
@@ -239,7 +239,7 @@ src/
 
 - Config parsing and planning remain pure where possible.
 - All subprocess execution goes through one backend adapter.
-- Commands consume plans rather than constructing ad hoc subprocess arguments.
+- Reconciliation commands consume plans; lifecycle commands use the same pure backend argument builders.
 - Human output goes to stderr when JSON data is written to stdout.
 - Backend command arguments are arrays passed to `spawn`, never shell strings.
 - No user input is evaluated by a shell.
@@ -251,7 +251,7 @@ The upstream CLI is evolving. Skillstate should detect supported commands and ve
 Initial compatibility strategy:
 
 1. Resolve local `skills` package version.
-2. Enforce tested semver range.
+2. Enforce the exact tested backend version until a broader range has contract coverage.
 3. Prefer stable native commands when available.
 4. Fall back only to explicitly tested experimental commands.
 5. Fail clearly when no safe route exists.
@@ -261,9 +261,9 @@ Example operation mapping:
 | Operation | Preferred backend behavior |
 | --- | --- |
 | Install selected source | `skills add <source> --skill ... --agent ... --yes` |
-| Restore backend lock | Stable `skills install`, then `experimental_install` only when tested |
+| Restore selected locked skills | `skills add <source> --skill ... --agent ... --yes` |
 | Remove selected skills | `skills remove --skill ... --agent ... --yes` |
-| Update | `skills update <skill...> --project --yes` where supported |
+| Update declared skills | Source-scoped `skills add` followed by state verification |
 
 ## Planning Model
 
@@ -435,18 +435,16 @@ Acceptance criteria:
 - Keep changelog from first public prerelease.
 - Pin GitHub Actions by commit before public release.
 
-## Open Decisions
+## Implementation Decisions
 
-Resolve during Milestone 0 or focused spikes:
-
-1. Minimum Node.js version.
-2. npm, pnpm, or another development package manager.
-3. TOML parser/editor with acceptable formatting preservation.
-4. Exact tested `skills` package range.
-5. Whether v1 permits local sources outside the Git root.
-6. Whether user-level agent overrides need a separate uncommitted config file.
-7. Whether `update` operates by skill name, source, or both.
-8. Whether upstream lock schema changes warrant a compatibility layer or strict version coupling.
+1. Minimum Node.js version is `22.20.0`, matching the backend engine.
+2. npm with a committed lockfile is the development package manager.
+3. `smol-toml` handles parsing; a narrow range editor preserves unrelated formatting and validates the full candidate before atomic writes.
+4. Backend compatibility is pinned exactly to `skills@1.5.20` until explicit contract tests support another version.
+5. V1 rejects local sources and resolved symlink targets outside the Git root.
+6. Invocation-level `--agent` and `--mode` overrides require no user config file.
+7. `update` accepts explicit skill names; no-name updates refresh all declared entries and rediscover wildcard sources without touching unmanaged lock entries.
+8. Project lock schema version `1` is coupled strictly and remains backend-owned.
 
 ## Success Measures
 
