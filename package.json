@@ -59,7 +59,7 @@
   "dependencies": {
     "commander": "^15.0.0",
     "skills": "1.5.20",
-    "smol-toml": "^1.7.1",
+    "smol-toml": "^1.8.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
